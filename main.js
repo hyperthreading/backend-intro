@@ -1,6 +1,5 @@
 import express from "express";
 import mockData from "./data/mock.js";
-import { create } from "domain";
 import mongoose from "mongoose";
 import Todo from "./models/Todo.js";
 import { DATABASE_URL } from "./env.js";
