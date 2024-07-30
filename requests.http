@@ -1,0 +1,61 @@
+### 할일 목록 불러오기
+
+GET http://localhost:3000/todos
+
+### 할일 목록 불러오기
+
+GET http://localhost:3000/todos?isComplete=true&sortBy=updatedAt
+
+
+### 할일 상세조회하기
+
+GET http://localhost:3000/todos/66a8980dab3f3f7cdcc1bd35
+
+### 할일 상세조회하기: 이상한 id
+
+GET http://localhost:3000/todos/123123123
+
+### 할일 추가하기
+
+POST http://localhost:3000/todos
+Content-Type: application/json
+
+{
+  "title": "집 청소하기",
+  "isComplete": false
+}
+
+### 할일 업데이트: 완료처리
+
+PATCH http://localhost:3000/todos/1
+Content-Type: application/json
+
+{
+  "isComplete": true
+}
+
+
+### 할일 업데이트: 제목 변경
+
+PATCH http://localhost:3000/todos/1
+Content-Type: application/json
+
+{
+  "title": "집 청소하기",
+  "isComplete": true
+}
+
+
+### 할일 업데이트: 이상한 id
+
+PATCH http://localhost:3000/todos/123123123
+Content-Type: application/json
+
+{
+  "title": "집 청소하기",
+  "isComplete": true
+}
+
+### 할일 삭제하기
+
+DELETE http://localhost:3000/todos/1
