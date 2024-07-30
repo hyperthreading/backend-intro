@@ -86,6 +86,6 @@ app.delete("/todos/:id", (req, res) => {
   res.json({ id: Number(id) });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server is running on port 3000");
 });
