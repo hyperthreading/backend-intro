@@ -10,6 +10,10 @@ const app = express();
 
 app.use(express.json());
 
+const asyncHandler = (handler) => (req, res, next) => {
+  handler(req, res, next).catch(next);
+};
+
 app.get("/todos", async (req, res) => {
   const { isComplete, sortBy } = req.query;
 
@@ -42,47 +46,50 @@ app.get("/todos/:id", async (req, res) => {
   res.json(todo);
 });
 
-app.post("/todos", (req, res) => {
-  const { title, isComplete } = req.body;
-  const newTodo = {
-    id: mockData.length + 1,
-    title,
-    isComplete,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  mockData.push(newTodo);
-  res.json(newTodo);
-});
+app.post(
+  "/todos",
+  asyncHandler(async (req, res) => {
+    const { title, isComplete } = req.body;
+    const newTodo = await Todo.create({
+      title,
+      isComplete,
+    });
+    res.json(newTodo);
+  })
+);
 
-app.patch("/todos/:id", (req, res) => {
+app.patch("/todos/:id", asyncHandler(async (req, res) => {
   const { id } = req.params;
   const patchData = req.body;
-  const todo = mockData.find((todo) => todo.id === Number(id));
+  const todo = await Todo.findById(id);
 
   if (!todo) {
     res.status(404).json({ message: "Todo not found" });
     return;
   }
-  
+
   for (const key of Object.keys(patchData)) {
     todo[key] = patchData[key];
   }
-  todo.updatedAt = new Date();
+  await todo.save();
+
   res.json(todo);
-});
+}));
 
-app.delete("/todos/:id", (req, res) => {
+app.delete("/todos/:id", asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const todoIndex = mockData.findIndex((todo) => todo.id === Number(id));
+  await Todo.findByIdAndDelete(id);
+  res.json({ id });
+}));
 
-  if (todoIndex === -1) {
-    res.status(404).json({ message: "Todo not found" });
+app.use((err, req, res, next) => {
+  if (err.name === "ValidationError") {
+    res.status(400).json({ message: err.message });
+    return;
+  } else {
+    res.status(500).json({ message: "Internal Server Error", content: err.message });
     return;
   }
-
-  mockData.splice(todoIndex, 1);
-  res.json({ id: Number(id) });
 });
 
 app.listen(process.env.PORT || 3000, () => {

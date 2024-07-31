@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 
 const todoSchema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    required: true,
+    minLength: 1,
+    maxLength: 100,
+  },
   isComplete: Boolean,
 }, {
   timestamps: true,
