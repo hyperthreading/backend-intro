@@ -2,7 +2,7 @@ import express from "express";
 import mockData from "./data/mock.js";
 import mongoose from "mongoose";
 import Todo from "./models/Todo.js";
-import { DATABASE_URL } from "./env.js";
+import { DATABASE_URL, PORT } from "./env.js";
 
 await mongoose.connect(DATABASE_URL);
 
@@ -100,6 +100,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(PORT, () => {
   console.log("Server is running on port 3000");
 });
