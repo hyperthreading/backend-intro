@@ -58,36 +58,44 @@ app.post(
   })
 );
 
-app.patch("/todos/:id", asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const patchData = req.body;
-  const todo = await Todo.findById(id);
+app.patch(
+  "/todos/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const patchData = req.body;
+    const todo = await Todo.findById(id);
 
-  if (!todo) {
-    res.status(404).json({ message: "Todo not found" });
-    return;
-  }
+    if (!todo) {
+      res.status(404).json({ message: "Todo not found" });
+      return;
+    }
 
-  for (const key of Object.keys(patchData)) {
-    todo[key] = patchData[key];
-  }
-  await todo.save();
+    for (const key of Object.keys(patchData)) {
+      todo[key] = patchData[key];
+    }
+    await todo.save();
 
-  res.json(todo);
-}));
+    res.json(todo);
+  })
+);
 
-app.delete("/todos/:id", asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  await Todo.findByIdAndDelete(id);
-  res.json({ id });
-}));
+app.delete(
+  "/todos/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    await Todo.findByIdAndDelete(id);
+    res.json({ id });
+  })
+);
 
 app.use((err, req, res, next) => {
   if (err.name === "ValidationError") {
     res.status(400).json({ message: err.message });
     return;
   } else {
-    res.status(500).json({ message: "Internal Server Error", content: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", content: err.message });
     return;
   }
 });
